@@ -32,8 +32,9 @@ Read only the files needed for the task:
 2. For idea work, require edge thesis, archetype, target regime, invalid regime, entry trigger, exit/risk model, and first validation plan.
 3. For implementation work, keep changes Jesse-native and add focused tests.
 4. For evaluation work, report net profit, profit factor, expectancy, max drawdown, trade count, regime notes, and parameter sensitivity.
-5. For Backtesting Desk work, rank candidates before HPO and require an HPO gate before optimization.
-6. End every candidate review with one verdict: `reject`, `revise`, `hpo-candidate`, or `paper-trade candidate`.
+5. For Backtesting Desk work, evaluate asset, timeframe, and leverage routes before HPO.
+6. Rank candidates before HPO and require an HPO gate before optimization.
+7. End every candidate review with one verdict: `reject`, `revise`, `hpo-candidate`, or `paper-trade candidate`.
 
 ## Gas Town Defaults
 
@@ -51,7 +52,8 @@ Read only the files needed for the task:
 - Check framework correctness before alpha quality.
 - Treat raw backtest profit as insufficient.
 - Reject fragile candidates with too few trades, unstable nearby parameters, excessive drawdown, or profits concentrated in one regime.
-- Promote to HPO only when baseline tests/backtests pass and the search space is small, thesis-linked, and worth the compute.
+- Promote to HPO only when baseline tests/backtests pass, asset/timeframe/leverage route evidence is usable, and the search space is small, thesis-linked, and worth the compute.
+- Treat leverage as a candidate property that must be earned by drawdown, stop distance, slippage, and liquidation-buffer evidence.
 - Treat account-downloaded Jesse.Trade strategy code as private input unless the user explicitly asks to commit it.
 - Do not create live configs or restart Jesse unless explicitly asked.
 - Use `jh.debug()` for strategy debug output, never `print()`.
@@ -65,5 +67,6 @@ For strategy reports, include:
 - implementation summary
 - tests/backtests run
 - metrics
+- recommended asset/timeframe/leverage route
 - weakest risk
 - verdict

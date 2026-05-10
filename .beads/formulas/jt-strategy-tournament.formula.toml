@@ -10,6 +10,18 @@ required = true
 description = "Exchange, symbol, timeframe, date range, and data source"
 default = "Sandbox BTC-USDT futures 1m fixture"
 
+[vars.asset_universe]
+description = "Comma-separated assets/symbols to test before HPO selection"
+default = "BTC-USDT, ETH-USDT, SOL-USDT"
+
+[vars.timeframe_universe]
+description = "Comma-separated timeframes to test before HPO selection"
+default = "5m, 15m, 1h, 4h"
+
+[vars.leverage_grid]
+description = "Comma-separated leverage candidates to evaluate with liquidation and drawdown guardrails"
+default = "1x, 2x, 3x"
+
 [[steps]]
 id = "run-candidates"
 title = "Run candidate backtests"
@@ -20,15 +32,20 @@ Evaluate these strategies on {{market}}:
 {{strategies}}
 
 Use the Backtesting Desk flow. Run correctness checks before metrics.
+
+For each strategy, include route sweeps over:
+Assets: {{asset_universe}}
+Timeframes: {{timeframe_universe}}
+Leverage grid: {{leverage_grid}}
 """
 
 [[steps]]
 id = "compare"
 title = "Compare tournament results"
 description = """
-Compare candidates using profit factor, expectancy, drawdown, trade count, route correctness, and parameter risk.
+Compare candidates using profit factor, expectancy, drawdown, trade count, route correctness, asset robustness, leverage safety, and parameter risk.
 
-Rank by robustness, not raw profit.
+Rank by robustness, not raw profit. A strategy that only wins on one over-levered asset route should not beat a lower-return strategy that is stable across assets and leverage bands.
 """
 needs = ["run-candidates"]
 
@@ -38,6 +55,6 @@ title = "Select HPO candidates"
 description = """
 Select zero or more hpo-candidate strategies.
 
-For each selected strategy, specify the small hyperparameter set worth optimizing and why each parameter belongs to the thesis.
+For each selected strategy, specify the selected asset/timeframe/leverage route, the small hyperparameter set worth optimizing, and why each parameter belongs to the thesis.
 """
 needs = ["compare"]

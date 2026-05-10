@@ -10,6 +10,18 @@ required = true
 description = "Exchange, symbol, timeframe, date range, and data source"
 default = "Sandbox BTC-USDT futures 1m fixture"
 
+[vars.asset_universe]
+description = "Comma-separated assets/symbols to test before HPO"
+default = "BTC-USDT, ETH-USDT"
+
+[vars.timeframe_universe]
+description = "Comma-separated timeframes to test before HPO"
+default = "1m, 5m, 15m, 1h"
+
+[vars.leverage_grid]
+description = "Comma-separated leverage candidates to evaluate with liquidation and drawdown guardrails"
+default = "1x, 2x, 3x"
+
 [[steps]]
 id = "correctness"
 title = "Check {{strategy_name}} correctness"
@@ -32,11 +44,27 @@ Report exact commands, hyperparameters, net profit, profit factor, expectancy, m
 needs = ["correctness"]
 
 [[steps]]
+id = "route-sweep"
+title = "Evaluate assets, timeframes, and leverage for {{strategy_name}}"
+description = """
+Evaluate {{strategy_name}} across:
+
+Assets: {{asset_universe}}
+Timeframes: {{timeframe_universe}}
+Leverage grid: {{leverage_grid}}
+
+Keep strategy hyperparameters fixed unless a route requires a Jesse-correctness adjustment. Report net profit, profit factor, expectancy, max drawdown, trade count, fee/slippage assumptions, liquidation buffer, and leverage risk for each route.
+
+Recommend the best asset/timeframe/leverage route and identify routes that should be rejected before HPO.
+"""
+needs = ["baseline-backtest"]
+
+[[steps]]
 id = "desk-decision"
 title = "Desk decision for {{strategy_name}}"
 description = """
 Decide reject, revise, hpo-candidate, or paper-trade candidate.
 
-Promote to hpo-candidate only if baseline metrics and thesis quality justify optimization.
+Promote to hpo-candidate only if baseline metrics, route sweep evidence, leverage guardrails, and thesis quality justify optimization.
 """
-needs = ["baseline-backtest"]
+needs = ["route-sweep"]

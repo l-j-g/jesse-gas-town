@@ -10,6 +10,10 @@ required = true
 description = "Approved hyperparameter ranges, objective, data split, and guardrails"
 required = true
 
+[vars.route]
+description = "Approved asset/timeframe/leverage route from Backtesting Desk"
+required = true
+
 [[steps]]
 id = "prepare-hpo"
 title = "Prepare HPO for {{strategy_name}}"
@@ -19,14 +23,18 @@ Use $jesse-gas-town-strategy-lab.
 Prepare HPO for {{strategy_name}} using this approved plan:
 {{hpo_plan}}
 
-Confirm parameter ranges are thesis-linked and small. Confirm data split and objective. Do not broaden the search without evidence.
+Approved route:
+{{route}}
+
+Confirm parameter ranges are thesis-linked and small. Confirm data split, objective, selected asset/timeframe/leverage route, and leverage guardrails. Do not broaden the search without evidence.
 """
 
 [[steps]]
 id = "run-hpo"
 title = "Run HPO for {{strategy_name}}"
 description = """
-Run HPO for {{strategy_name}} only within the approved plan.
+Run HPO for {{strategy_name}} only within the approved plan and approved route:
+{{route}}
 
 Capture best candidates, objective score, backtest metrics, and logs. Use scripts/strategy-lab-cli-env.sh before Jesse CLI commands.
 """
@@ -36,7 +44,7 @@ needs = ["prepare-hpo"]
 id = "post-hpo-review"
 title = "Review HPO result for {{strategy_name}}"
 description = """
-Review best HPO candidates against baseline and nearby parameters.
+Review best HPO candidates against baseline, nearby parameters, and selected route/leverage assumptions.
 
 Return reject, revise, or paper-gate-ready. Do not recommend direct live trading.
 """

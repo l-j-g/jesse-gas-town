@@ -14,6 +14,18 @@ required = true
 description = "Exchange, symbol, timeframe, date range, and data source"
 default = "Sandbox BTC-USDT futures 1m fixture"
 
+[vars.asset_universe]
+description = "Comma-separated assets/symbols to test before HPO"
+default = "BTC-USDT, ETH-USDT, SOL-USDT"
+
+[vars.timeframe_universe]
+description = "Comma-separated timeframes to test before HPO"
+default = "5m, 15m, 1h, 4h"
+
+[vars.leverage_grid]
+description = "Comma-separated leverage candidates to evaluate with liquidation and drawdown guardrails"
+default = "1x, 2x, 3x"
+
 [[steps]]
 id = "intake"
 title = "Backtesting Desk intake"
@@ -29,7 +41,16 @@ Strategies:
 Market:
 {{market}}
 
-State thesis, route, data assumptions, and exact validation sequence. Do not optimize yet.
+Asset universe:
+{{asset_universe}}
+
+Timeframe universe:
+{{timeframe_universe}}
+
+Leverage grid:
+{{leverage_grid}}
+
+State thesis, route, data assumptions, leverage assumptions, liquidation guardrails, and exact validation sequence. Do not optimize yet.
 """
 
 [[steps]]
@@ -46,14 +67,28 @@ Use scripts/strategy-lab-cli-env.sh before direct Jesse commands. Report exact c
 needs = ["intake"]
 
 [[steps]]
+id = "route-sweep"
+title = "Evaluate assets and leverage"
+description = """
+For each surviving strategy, sweep the approved route space:
+
+Assets: {{asset_universe}}
+Timeframes: {{timeframe_universe}}
+Leverage grid: {{leverage_grid}}
+
+Keep hyperparameters fixed. Report route-level net profit, profit factor, expectancy, max drawdown, trade count, fee/slippage assumptions, liquidation buffer, and recommended leverage.
+"""
+needs = ["baseline-backtests"]
+
+[[steps]]
 id = "rank"
 title = "Rank desk candidates"
 description = """
-Rank candidates by robustness: lifecycle correctness, trade count, profit factor, expectancy, drawdown, and parameter risk.
+Rank candidates by robustness: lifecycle correctness, asset/timeframe stability, leverage safety, trade count, profit factor, expectancy, drawdown, and parameter risk.
 
 Return reject, revise, hpo-candidate, or paper-trade candidate for each strategy.
 """
-needs = ["baseline-backtests"]
+needs = ["route-sweep"]
 
 [[steps]]
 id = "next-actions"

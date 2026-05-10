@@ -3,6 +3,10 @@
 - Strategy:
 - Thesis:
 - Market and route:
+- Asset universe tested:
+- Timeframe universe tested:
+- Leverage grid tested:
+- Recommended route:
 - Data slice:
 - Hyperparameters:
 - Commands run:
@@ -12,6 +16,7 @@
 - Expectancy:
 - Max drawdown:
 - Trade count:
+- Liquidation/leverage risk:
 - Regime notes:
 - Parameter sensitivity:
 - Weakest failure mode:

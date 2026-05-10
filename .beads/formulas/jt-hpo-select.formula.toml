@@ -10,6 +10,10 @@ required = true
 description = "Baseline tests, backtest metrics, and robustness notes"
 required = true
 
+[vars.route_evidence]
+description = "Asset, timeframe, leverage, drawdown, and liquidation-buffer evidence"
+default = "No route sweep evidence supplied"
+
 [[steps]]
 id = "hpo-gate"
 title = "HPO gate for {{strategy_name}}"
@@ -19,7 +23,10 @@ Use $jesse-gas-town-strategy-lab.
 Review this evidence for {{strategy_name}}:
 {{evidence}}
 
+Review route evidence:
+{{route_evidence}}
+
 Return reject, revise, or hpo-candidate. Do not run HPO in this step.
 
-HPO requires valid Jesse semantics, sufficient trade count, positive expectancy, acceptable drawdown, non-fragile thesis, and few meaningful hyperparameters.
+HPO requires valid Jesse semantics, sufficient trade count, positive expectancy, acceptable drawdown, at least one robust asset/timeframe/leverage route, acceptable liquidation buffer for futures leverage, non-fragile thesis, and few meaningful hyperparameters.
 """
