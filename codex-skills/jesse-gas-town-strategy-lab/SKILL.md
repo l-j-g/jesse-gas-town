@@ -1,6 +1,6 @@
 ---
 name: jesse-gas-town-strategy-lab
-description: Use when orchestrating Jesse trading strategy research with Gas Town: generating new strategy ideas, creating beads/formulas/convoys, dispatching Codex workers, backtesting candidates, reviewing robustness, and deciding whether a strategy can be promoted to paper-trade candidate. This skill keeps Jesse as the backtest/execution engine and Gas Town as the multi-agent workflow layer.
+description: "Use when orchestrating Jesse trading strategy research with Gas Town: generating new strategy ideas, creating beads/formulas/convoys, dispatching Codex workers, backtesting candidates, reviewing robustness, and deciding whether a strategy can be promoted to paper-trade candidate. This skill keeps Jesse as the backtest/execution engine and Gas Town as the multi-agent workflow layer."
 ---
 
 # Jesse Gas Town Strategy Lab
