@@ -55,7 +55,7 @@ Automated account download:
 
 ```bash
 cd /Users/lg/gt/jesse_gas_town/crew/lg
-./scripts/download-jesse-trade-strategies.py --account <account-or-email> --tiers premium,free,unknown
+./scripts/download-jesse-trade-strategies.py --account "your-account-or-email" --tiers premium,free,unknown
 ```
 
 The script opens Chrome with a local DevTools session, prompts for the password without echoing it, clicks each `Get Strategy` action, and writes any downloaded or captured code to the gitignored source directory.
