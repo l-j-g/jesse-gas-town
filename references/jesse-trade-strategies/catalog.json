@@ -1,7 +1,7 @@
 {
   "source": "https://jesse.trade/strategies",
   "source_access": "public metrics only; strategy source requires account-only Get Strategy access",
-  "retrieved_date": "2026-05-10",
+  "retrieved_date": "2026-05-11",
   "strategies": [
     {
       "name": "TemaTrendFollowing",
@@ -15,6 +15,34 @@
       "sharpe": 2.97,
       "max_drawdown_pct": -25.99,
       "trades": 67,
+      "source_status": "account_code_required"
+    },
+    {
+      "name": "ADXWilliamsStrategy",
+      "slug": "adxwilliamsstrategy",
+      "url": "https://jesse.trade/strategies/adxwilliamsstrategy",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "15m",
+      "period": "2022-01-01 to 2022-12-31",
+      "pnl_pct": 210.62,
+      "sharpe": 1.98,
+      "max_drawdown_pct": -25.20,
+      "trades": 56,
+      "source_status": "account_code_required"
+    },
+    {
+      "name": "KAMA_TrendFollowing",
+      "slug": "kama-trendfollowing",
+      "url": "https://jesse.trade/strategies/kama-trendfollowing",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "15m",
+      "period": "2022-01-01 to 2022-12-31",
+      "pnl_pct": 147.28,
+      "sharpe": 2.08,
+      "max_drawdown_pct": -23.55,
+      "trades": 128,
       "source_status": "account_code_required"
     },
     {
@@ -116,6 +144,34 @@
       "source_status": "account_code_required"
     },
     {
+      "name": "TrendSwingTrader V1",
+      "slug": "trendswingtrader-v1",
+      "url": "https://jesse.trade/strategies/trendswingtrader-v1",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "4h",
+      "period": "2022-01-01 to 2022-12-31",
+      "pnl_pct": 68.00,
+      "sharpe": 1.11,
+      "max_drawdown_pct": -41.40,
+      "trades": 30,
+      "source_status": "account_code_required"
+    },
+    {
+      "name": "AlligatorAI | By o1-preview model",
+      "slug": "alligatorai-by-o1-preview-model",
+      "url": "https://jesse.trade/strategies/alligatorai-by-o1-preview-model",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "30m",
+      "period": "2022-01-01 to 2022-12-31",
+      "pnl_pct": 67.70,
+      "sharpe": 1.61,
+      "max_drawdown_pct": -14.00,
+      "trades": 41,
+      "source_status": "account_code_required"
+    },
+    {
       "name": "IchimokuCloud",
       "slug": "ichimokucloud",
       "url": "https://jesse.trade/strategies/ichimokucloud",
@@ -155,6 +211,34 @@
       "sharpe": 2.63,
       "max_drawdown_pct": -1.63,
       "trades": 7,
+      "source_status": "account_code_required"
+    },
+    {
+      "name": "Slow Trend Following",
+      "slug": "slow-trend-following",
+      "url": "https://jesse.trade/strategies/slow-trend-following",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "6h",
+      "period": "2024-02-01 to 2024-02-29",
+      "pnl_pct": 37.69,
+      "sharpe": 9.43,
+      "max_drawdown_pct": -1.49,
+      "trades": 5,
+      "source_status": "account_code_required"
+    },
+    {
+      "name": "Trend Following | By o1-preview model",
+      "slug": "trend-following-by-o1-preview-model",
+      "url": "https://jesse.trade/strategies/trend-following-by-o1-preview-model",
+      "author": "saleh",
+      "symbol": "BTC-USDT",
+      "timeframe": "4h",
+      "period": "2022-01-01 to 2022-12-31",
+      "pnl_pct": 24.44,
+      "sharpe": 1.02,
+      "max_drawdown_pct": -14.73,
+      "trades": 87,
       "source_status": "account_code_required"
     },
     {
