@@ -114,6 +114,8 @@ cd /Users/lg/src/jesse
   ```bash
   codex -C /Users/lg/src/jesse --profile jesse
   ```
+- For Gas Town strategy orchestration, read `docs/gas-town-strategy-lab.md` and `docs/gas-town-prompts.md`.
+- Use the `jesse-gas-town-strategy-lab` skill when generating strategy ideas, dispatching Gas Town workers, evaluating candidates, or paper-gating strategy candidates.
 - Read `docs/jesse-strategy-playbook.md` for the intended `Strategy` lifecycle and trade-placement contract.
 - Read `docs/jesse-strategy-evaluation.md` before evaluating, reviewing, or optimizing a strategy.
 - When designing a new strategy, start from an explicit market edge and regime thesis, then translate it into Jesse-native lifecycle methods and order semantics.

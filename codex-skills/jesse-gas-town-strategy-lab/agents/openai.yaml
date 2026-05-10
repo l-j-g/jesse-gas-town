@@ -1,0 +1,7 @@
+interface:
+  display_name: "Jesse Gas Town Strategy Lab"
+  short_description: "Coordinate Jesse strategy research in Gas Town"
+  default_prompt: "Use $jesse-gas-town-strategy-lab to create a Gas Town workflow for researching, backtesting, and paper-gating a Jesse strategy."
+
+policy:
+  allow_implicit_invocation: true

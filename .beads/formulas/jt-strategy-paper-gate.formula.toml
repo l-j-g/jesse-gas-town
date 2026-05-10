@@ -1,0 +1,25 @@
+description = "Decide whether a Jesse strategy is ready for paper trading"
+formula = "jt-strategy-paper-gate"
+version = 1
+
+[vars.strategy_name]
+description = "Strategy class/name to gate"
+required = true
+
+[vars.evidence]
+description = "Summary of implementation, tests, backtests, and robustness review"
+required = true
+
+[[steps]]
+id = "paper-gate"
+title = "Paper-trade gate for {{strategy_name}}"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Assess {{strategy_name}} using this evidence:
+{{evidence}}
+
+Return exactly one status: reject, revise, or paper-trade candidate.
+
+Do not prepare live deployment. Paper-trade candidate requires valid Jesse semantics, positive expectancy after fees, proportionate drawdown, enough trades, and non-collapsing nearby parameters.
+"""

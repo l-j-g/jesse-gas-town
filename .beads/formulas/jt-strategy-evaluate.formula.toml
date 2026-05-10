@@ -1,0 +1,40 @@
+description = "Backtest and evaluate one Jesse strategy candidate"
+formula = "jt-strategy-evaluate"
+version = 1
+
+[vars.strategy_name]
+description = "Strategy class/name to evaluate"
+required = true
+
+[vars.market]
+description = "Exchange, symbol, timeframe, and date range"
+default = "existing imported crypto futures candles"
+
+[[steps]]
+id = "framework-check"
+title = "Check framework correctness"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Review {{strategy_name}} for Jesse lifecycle correctness, futures/spot assumptions, order shapes, sizing, stop-loss, take-profit, and filters.
+"""
+
+[[steps]]
+id = "backtest"
+title = "Backtest {{strategy_name}}"
+description = """
+Backtest {{strategy_name}} on {{market}}.
+
+Report net profit, profit factor, expectancy, max drawdown, trade count, win rate, and any obvious fee/slippage/sizing caveats.
+"""
+needs = ["framework-check"]
+
+[[steps]]
+id = "verdict"
+title = "Evaluate candidate quality"
+description = """
+Decide whether {{strategy_name}} is reject, revise, or ready for robustness review.
+
+Reject results dominated by too few trades, one exceptional period, weak drawdown profile, or parameter fragility.
+"""
+needs = ["backtest"]

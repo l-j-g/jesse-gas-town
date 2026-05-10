@@ -1,0 +1,20 @@
+description = "Generate Jesse crypto-futures strategy ideas from a market focus"
+formula = "jt-strategy-idea"
+version = 1
+
+[vars.focus]
+description = "Market focus, symbol, regime, or archetype to explore"
+required = true
+
+[[steps]]
+id = "generate-ideas"
+title = "Generate Jesse strategy ideas"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Generate 3 Jesse crypto-futures strategy ideas for: {{focus}}.
+
+Each idea must include edge thesis, archetype, target regime, invalid regime, entry trigger, exit/risk model, minimum hyperparameters, first test plan, and overfitting risk.
+
+Rank by expected robustness, not imagined raw profit. Do not write code.
+"""

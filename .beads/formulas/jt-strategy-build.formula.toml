@@ -1,0 +1,33 @@
+description = "Implement one selected Jesse strategy with focused tests"
+formula = "jt-strategy-build"
+version = 1
+
+[vars.strategy_name]
+description = "Name of the selected strategy"
+required = true
+
+[vars.idea]
+description = "Selected strategy idea and thesis"
+required = true
+
+[[steps]]
+id = "implement"
+title = "Implement {{strategy_name}}"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Implement {{strategy_name}} from this idea:
+{{idea}}
+
+Use Jesse-native Strategy lifecycle methods, futures order semantics, built-in indicators/helpers where practical, and focused tests. Avoid unrelated refactors.
+"""
+
+[[steps]]
+id = "targeted-tests"
+title = "Run targeted strategy tests"
+description = """
+Run targeted pytest for {{strategy_name}} and any shared strategy helper touched.
+
+Report exact commands, pass/fail result, changed files, and remaining validation needed.
+"""
+needs = ["implement"]
