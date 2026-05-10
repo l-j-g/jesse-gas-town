@@ -1,0 +1,66 @@
+description = "Coordinate a full Jesse Backtesting Desk evaluation"
+formula = "jt-backtest-desk"
+version = 1
+
+[vars.objective]
+description = "Backtesting objective or tournament theme"
+required = true
+
+[vars.strategies]
+description = "Comma-separated strategies to evaluate"
+required = true
+
+[vars.market]
+description = "Exchange, symbol, timeframe, date range, and data source"
+default = "Sandbox BTC-USDT futures 1m fixture"
+
+[[steps]]
+id = "intake"
+title = "Backtesting Desk intake"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Run Backtesting Desk intake for objective:
+{{objective}}
+
+Strategies:
+{{strategies}}
+
+Market:
+{{market}}
+
+State thesis, route, data assumptions, and exact validation sequence. Do not optimize yet.
+"""
+
+[[steps]]
+id = "baseline-backtests"
+title = "Run baseline backtests"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Run baseline correctness checks and backtests for:
+{{strategies}}
+
+Use scripts/strategy-lab-cli-env.sh before direct Jesse commands. Report exact commands, metrics, and errors.
+"""
+needs = ["intake"]
+
+[[steps]]
+id = "rank"
+title = "Rank desk candidates"
+description = """
+Rank candidates by robustness: lifecycle correctness, trade count, profit factor, expectancy, drawdown, and parameter risk.
+
+Return reject, revise, hpo-candidate, or paper-trade candidate for each strategy.
+"""
+needs = ["baseline-backtests"]
+
+[[steps]]
+id = "next-actions"
+title = "Create next actions"
+description = """
+For each candidate, recommend the next Gas Town action: reject, revise implementation, run HPO, add robustness tests, or paper-gate.
+
+Do not prepare live deployment.
+"""
+needs = ["rank"]

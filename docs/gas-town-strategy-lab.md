@@ -27,6 +27,8 @@ This workflow uses Gas Town for orchestration and Jesse for trading logic, backt
 5. Evaluate profit only with guardrails: profit factor, drawdown, trade count, expectancy, and regime robustness.
 6. Promote only to paper-trade candidate, never directly to live.
 
+For backtesting, tournament ranking, tuning, and HPO selection, use the separate Backtesting Desk procedure in `docs/gas-town-backtesting-desk.md`.
+
 ## Commands
 
 ```bash

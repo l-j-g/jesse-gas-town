@@ -1,0 +1,25 @@
+description = "Gate a Jesse strategy before hyperparameter optimization"
+formula = "jt-hpo-select"
+version = 1
+
+[vars.strategy_name]
+description = "Jesse strategy class/name to gate"
+required = true
+
+[vars.evidence]
+description = "Baseline tests, backtest metrics, and robustness notes"
+required = true
+
+[[steps]]
+id = "hpo-gate"
+title = "HPO gate for {{strategy_name}}"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Review this evidence for {{strategy_name}}:
+{{evidence}}
+
+Return reject, revise, or hpo-candidate. Do not run HPO in this step.
+
+HPO requires valid Jesse semantics, sufficient trade count, positive expectancy, acceptable drawdown, non-fragile thesis, and few meaningful hyperparameters.
+"""

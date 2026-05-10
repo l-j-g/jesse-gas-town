@@ -1,0 +1,43 @@
+description = "Compare multiple Jesse strategies and select the strongest candidates"
+formula = "jt-strategy-tournament"
+version = 1
+
+[vars.strategies]
+description = "Comma-separated Jesse strategy names"
+required = true
+
+[vars.market]
+description = "Exchange, symbol, timeframe, date range, and data source"
+default = "Sandbox BTC-USDT futures 1m fixture"
+
+[[steps]]
+id = "run-candidates"
+title = "Run candidate backtests"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Evaluate these strategies on {{market}}:
+{{strategies}}
+
+Use the Backtesting Desk flow. Run correctness checks before metrics.
+"""
+
+[[steps]]
+id = "compare"
+title = "Compare tournament results"
+description = """
+Compare candidates using profit factor, expectancy, drawdown, trade count, route correctness, and parameter risk.
+
+Rank by robustness, not raw profit.
+"""
+needs = ["run-candidates"]
+
+[[steps]]
+id = "select"
+title = "Select HPO candidates"
+description = """
+Select zero or more hpo-candidate strategies.
+
+For each selected strategy, specify the small hyperparameter set worth optimizing and why each parameter belongs to the thesis.
+"""
+needs = ["compare"]

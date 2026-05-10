@@ -1,0 +1,42 @@
+description = "Run correctness tests and baseline backtest for one Jesse strategy"
+formula = "jt-backtest-candidate"
+version = 1
+
+[vars.strategy_name]
+description = "Jesse strategy class/name to evaluate"
+required = true
+
+[vars.market]
+description = "Exchange, symbol, timeframe, date range, and data source"
+default = "Sandbox BTC-USDT futures 1m fixture"
+
+[[steps]]
+id = "correctness"
+title = "Check {{strategy_name}} correctness"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Review {{strategy_name}} for Jesse lifecycle, futures/spot assumptions, order shapes, sizing, exits, and filters.
+
+Run targeted tests first. Use source scripts/strategy-lab-cli-env.sh before direct Jesse CLI commands.
+"""
+
+[[steps]]
+id = "baseline-backtest"
+title = "Run baseline backtest for {{strategy_name}}"
+description = """
+Backtest {{strategy_name}} on {{market}} with default hyperparameters.
+
+Report exact commands, hyperparameters, net profit, profit factor, expectancy, max drawdown, win rate, trade count, and weakest failure mode.
+"""
+needs = ["correctness"]
+
+[[steps]]
+id = "desk-decision"
+title = "Desk decision for {{strategy_name}}"
+description = """
+Decide reject, revise, hpo-candidate, or paper-trade candidate.
+
+Promote to hpo-candidate only if baseline metrics and thesis quality justify optimization.
+"""
+needs = ["baseline-backtest"]

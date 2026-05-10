@@ -20,6 +20,7 @@ Use this skill when the task involves both Gas Town and Jesse strategy developme
 Read only the files needed for the task:
 
 - `docs/gas-town-strategy-lab.md` for the workflow.
+- `docs/gas-town-backtesting-desk.md` for backtesting, tournament ranking, and HPO gates.
 - `docs/gas-town-prompts.md` for reusable prompts.
 - `docs/jesse-strategy-playbook.md` for Strategy lifecycle and order rules.
 - `docs/jesse-strategy-evaluation.md` for metric and robustness gates.
@@ -30,7 +31,8 @@ Read only the files needed for the task:
 2. For idea work, require edge thesis, archetype, target regime, invalid regime, entry trigger, exit/risk model, and first validation plan.
 3. For implementation work, keep changes Jesse-native and add focused tests.
 4. For evaluation work, report net profit, profit factor, expectancy, max drawdown, trade count, regime notes, and parameter sensitivity.
-5. End every candidate review with one verdict: `reject`, `revise`, or `paper-trade candidate`.
+5. For Backtesting Desk work, rank candidates before HPO and require an HPO gate before optimization.
+6. End every candidate review with one verdict: `reject`, `revise`, `hpo-candidate`, or `paper-trade candidate`.
 
 ## Gas Town Defaults
 
@@ -38,13 +40,16 @@ Read only the files needed for the task:
 - Preferred agent: `codex-jesse`
 - Merge mode: `local` for research and candidate evaluation.
 - Formula prefix: `jt-strategy-*`
+- Backtesting Desk formulas: `jt-backtest-*`, `jt-strategy-tournament`, and `jt-hpo-*`
 - Use `gt sling <bead> jesse_gas_town --agent codex-jesse --merge=local` for worker dispatch.
+- Source `scripts/strategy-lab-cli-env.sh` before direct Jesse CLI/backtest/optimization commands.
 
 ## Review Rules
 
 - Check framework correctness before alpha quality.
 - Treat raw backtest profit as insufficient.
 - Reject fragile candidates with too few trades, unstable nearby parameters, excessive drawdown, or profits concentrated in one regime.
+- Promote to HPO only when baseline tests/backtests pass and the search space is small, thesis-linked, and worth the compute.
 - Do not create live configs or restart Jesse unless explicitly asked.
 - Use `jh.debug()` for strategy debug output, never `print()`.
 
