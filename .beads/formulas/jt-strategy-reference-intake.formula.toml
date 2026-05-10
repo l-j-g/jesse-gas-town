@@ -1,0 +1,42 @@
+description = "Classify downloaded Jesse.Trade example strategy sources for reference and HPO intake"
+formula = "jt-strategy-reference-intake"
+version = 1
+
+[vars.source_dir]
+description = "Local directory containing downloaded Jesse.Trade strategy source files"
+default = "references/jesse-trade-strategies/source"
+
+[vars.objective]
+description = "Reference intake objective"
+default = "Classify downloaded Jesse.Trade example strategies for Backtesting Desk candidates"
+
+[[steps]]
+id = "inventory"
+title = "Inventory imported Jesse.Trade strategy sources"
+description = """
+Use $jesse-gas-town-strategy-lab.
+
+Read the public catalog at references/jesse-trade-strategies/catalog.json and inspect downloaded source files in {{source_dir}}.
+
+Build an inventory mapping source files to catalog strategies. Do not publish account-only code in the report.
+"""
+
+[[steps]]
+id = "classify"
+title = "Classify strategy archetypes"
+description = """
+Classify each imported strategy by archetype, market thesis, route, hyperparameters, and obvious risks.
+
+Use {{objective}} as the guiding objective.
+"""
+needs = ["inventory"]
+
+[[steps]]
+id = "select-backtests"
+title = "Select Backtesting Desk candidates"
+description = """
+Select the imported strategies worth moving into Backtesting Desk.
+
+Rank by explainable edge, public metrics quality, route fit, trade count, drawdown, and implementation clarity. Return reject, reference-only, backtest-candidate, or hpo-candidate.
+"""
+needs = ["classify"]

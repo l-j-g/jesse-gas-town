@@ -21,6 +21,7 @@ Read only the files needed for the task:
 
 - `docs/gas-town-strategy-lab.md` for the workflow.
 - `docs/gas-town-backtesting-desk.md` for backtesting, tournament ranking, and HPO gates.
+- `docs/jesse-trade-example-strategy-references.md` when using Jesse.Trade example strategies as references.
 - `docs/gas-town-prompts.md` for reusable prompts.
 - `docs/jesse-strategy-playbook.md` for Strategy lifecycle and order rules.
 - `docs/jesse-strategy-evaluation.md` for metric and robustness gates.
@@ -41,6 +42,7 @@ Read only the files needed for the task:
 - Merge mode: `local` for research and candidate evaluation.
 - Formula prefix: `jt-strategy-*`
 - Backtesting Desk formulas: `jt-backtest-*`, `jt-strategy-tournament`, and `jt-hpo-*`
+- Jesse.Trade reference formula: `jt-strategy-reference-intake`
 - Use `gt sling <bead> jesse_gas_town --agent codex-jesse --merge=local` for worker dispatch.
 - Source `scripts/strategy-lab-cli-env.sh` before direct Jesse CLI/backtest/optimization commands.
 
@@ -50,6 +52,7 @@ Read only the files needed for the task:
 - Treat raw backtest profit as insufficient.
 - Reject fragile candidates with too few trades, unstable nearby parameters, excessive drawdown, or profits concentrated in one regime.
 - Promote to HPO only when baseline tests/backtests pass and the search space is small, thesis-linked, and worth the compute.
+- Treat account-downloaded Jesse.Trade strategy code as private input unless the user explicitly asks to commit it.
 - Do not create live configs or restart Jesse unless explicitly asked.
 - Use `jh.debug()` for strategy debug output, never `print()`.
 
