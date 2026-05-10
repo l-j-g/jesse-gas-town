@@ -150,3 +150,12 @@ testing-*.py
 # lsp
 jesse/lsp/
 pyrightconfig.json
+
+# Gas Town local runtime
+.runtime/
+.claude/
+.logs/
+state.json
+CLAUDE.md
+CLAUDE.local.md
+.beads/redirect
