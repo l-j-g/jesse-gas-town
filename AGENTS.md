@@ -26,17 +26,26 @@ When implementing features or fixing bugs:
 3. **Write/update tests** - Maintain test coverage
 4. **Run tests** to verify changes:
    ```bash
-   cd-jesse && pytest
+   cd /Users/lg/src/jesse
+   ./scripts/run-local-pytest.sh
    ```
 5. **Consider jesse-live** - Does this affect live trading?
 6. **Update API routes** if needed - Follow FastAPI patterns
 7. **Don't restart server** unless specifically asked
 
 ### Python Environment
-Use the Jesse Python interpreter:
+Use the repo-local Jesse interpreter after bootstrapping:
 ```
-/Users/salehmir/miniconda3/envs/jesse3.12/bin/python
+/Users/lg/src/jesse/.venv/bin/python
 ```
+
+Bootstrap it once from the repo root:
+```bash
+cd /Users/lg/src/jesse
+./scripts/setup-local-codex-env.sh
+```
+
+The bootstrap script uses `/opt/homebrew/Caskroom/miniconda/base/bin/python` (Python 3.12) to create `.venv`, installs dependencies from `requirements.txt`, and installs Jesse in editable mode.
 
 ### Running Jesse Backend
 The API server provides routes for the dashboard:
@@ -45,8 +54,8 @@ The API server provides routes for the dashboard:
 pkill -f "jesse run"
 
 # Start Jesse from bot directory (not jesse/)
-cd /Users/salehmir/codes/jesse/dev-jesse/bot
-/Users/salehmir/miniconda3/envs/jesse3.12/bin/jesse run > /tmp/jesse-output.log 2>&1 &
+cd /path/to/your/bot
+/Users/lg/src/jesse/.venv/bin/jesse run > /tmp/jesse-output.log 2>&1 &
 
 # Server runs at http://localhost:9001
 
@@ -59,16 +68,23 @@ tail -f /tmp/jesse-output.log
 ### Running Tests
 Run the test suite after changes if asked.
 ```bash
-cd-jesse && pytest
+cd /Users/lg/src/jesse
+./scripts/run-local-pytest.sh
+```
+
+Run the Jesse strategy baseline suite when working on strategy semantics, order handling, evaluation helpers, or framework-level trading behavior:
+```bash
+cd /Users/lg/src/jesse
+./scripts/run-jesse-strategy-suite.sh
 ```
 
 If you've updated jesse-rust, run tests after building:
 ```bash
-cd /Users/salehmir/Codes/jesse/dev-jesse/jesse-rust
+cd /path/to/your/jesse-rust
 ./build-local.sh
 
-cd /Users/salehmir/Codes/jesse/dev-jesse/jesse
-pytest
+cd /Users/lg/src/jesse
+./scripts/run-local-pytest.sh
 ```
 
 ## Important Notes
@@ -92,6 +108,25 @@ pytest
 - Follow existing patterns and conventions
 - Maintain consistency with the current codebase
 - Try to import only at the top of the file.
+
+### Strategy Development With Codex
+- Start Codex from the repo root with the Jesse profile:
+  ```bash
+  codex -C /Users/lg/src/jesse --profile jesse
+  ```
+- Read `docs/jesse-strategy-playbook.md` for the intended `Strategy` lifecycle and trade-placement contract.
+- Read `docs/jesse-strategy-evaluation.md` before evaluating, reviewing, or optimizing a strategy.
+- When designing a new strategy, start from an explicit market edge and regime thesis, then translate it into Jesse-native lifecycle methods and order semantics.
+- Default to crypto futures strategy assumptions unless the user specifies a different market.
+- Start from a concrete archetype such as trend pullback, breakout, range mean reversion, or exhaustion reversal before selecting indicators.
+- Before changing strategy logic, inspect `jesse/strategies/Strategy.py`, `jesse/indicators/__init__.py`, `jesse/helpers.py`, `jesse/testing_utils.py`, and the relevant tests in `tests/`.
+- Prefer built-in Jesse indicators, helpers, sizing utilities, and strategy lifecycle hooks over custom abstractions.
+- Optimize for profit with robustness constraints. Do not treat raw backtest profit as sufficient if drawdown, trade quality, or parameter sensitivity are weak.
+- Prefer simpler strategies that beat a strong baseline over elaborate indicator stacks with weak interpretability.
+- For optimization or backtest changes, inspect `jesse/config.py` and the relevant files under `jesse/modes/` before changing hyperparameters or execution flow.
+- Use targeted `pytest` coverage first, then run broader tests only when the change warrants it.
+- Use `./scripts/run-local-pytest.sh` for local test runs so third-party pytest plugins from dependencies do not interfere with Jesse's pinned `pytest` version.
+- Use `./scripts/run-jesse-strategy-suite.sh` when the change touches framework-level strategy behavior or the evaluation harness.
 
 ### Jesse-Rust Integration
 - When using Rust functions, **assume they exist** - don't add existence checks
@@ -130,4 +165,3 @@ This repository is the foundation of the Jesse ecosystem:
 - **go-jesse-trade/backend** - Go project that contains the api2 backend of the jesse-trade website.
 - **go-jesse-trade/frontend** - NuxtJS project that contains the frontend of the jesse-trade website.
 - **strategy-executor** - Go project that contains the strategy executor microservice used to execute strategies submitted by the users of the website.
-
