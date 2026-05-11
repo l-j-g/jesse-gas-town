@@ -2,3 +2,4 @@ from .Strategy import cached, Strategy
 from .RangeBarBollingerMeanReversion import RangeBarBollingerMeanReversion
 from .RangeBarBreakoutPullbackScalp import RangeBarBreakoutPullbackScalp
 from .SyntheticRangeBarStrategy import SyntheticRangeBarStrategy
+from .TrendMomentumBreakout import TrendMomentumBreakout
