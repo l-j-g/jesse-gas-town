@@ -93,3 +93,50 @@ Run Backtesting Desk first against:
 4. Turtle V2
 
 For each, run correctness review, baseline backtest, asset/timeframe route sweep, leverage guardrail review, then HPO gate.
+
+## Wave 1 Candidate Prep
+
+### 1) KAMA_TrendFollowing
+
+- Archetype: trend following with higher-timeframe confirmation.
+- Baseline route: BTC-USDT futures first, then ETH-USDT and SOL-USDT if the BTC baseline is coherent.
+- Timeframes: 15m, 30m, 1h.
+- Leverage route: 1x, 2x, 3x.
+- Hyperparameters: none exposed; the strategy currently relies on hard-coded thresholds and cooldown logic.
+- Correctness notes: futures order placement is Jesse-valid because entries flow through `self.buy` / `self.sell` and exits are attached after fill. The main prep blocker is that the control surface is fixed in code, so the desk has little parameter room until the thresholds are surfaced as hyperparameters.
+
+### 2) SuperScalper
+
+- Archetype: trend-aligned scalper using short- and higher-timeframe trend agreement.
+- Baseline route: BTC-USDT futures first, then ETH-USDT and SOL-USDT.
+- Timeframes: 5m, 15m, 30m.
+- Leverage route: 1x, 2x, 3x, with 5x only after liquidation-buffer review.
+- Hyperparameters:
+  - `stop_loss`
+  - `take_profit`
+  - `adx_threshold`
+  - `long_term_ma_period`
+- Correctness notes: Jesse lifecycle usage is mostly clean. Entry cancellation is explicit, exits are set after fill, and the strategy has a compact hyperparameter set. The main review item is whether the scalper edge survives fees and slippage across the lower-timeframe sweep.
+
+### 3) TrendWaveRiderV2
+
+- Archetype: trend-pullback hybrid with ADX and CCI confirmation.
+- Baseline route: BTC-USDT futures first, then ETH-USDT and SOL-USDT.
+- Timeframes: 15m, 30m, 1h.
+- Leverage route: 1x, 2x, 3x.
+- Hyperparameters: none exposed; the current logic uses fixed trend and oscillator thresholds.
+- Correctness notes: the package is structurally Jesse-valid for futures, but it is another fixed-logic candidate with no tuning surface. That makes it a reference input more than an HPO-ready package until the desk decides whether to surface the threshold constants.
+
+### 4) Turtle V2
+
+- Archetype: Donchian breakout with trend and chop filters.
+- Baseline route: BTC-USDT futures first, then ETH-USDT and SOL-USDT.
+- Timeframes: 30m, 1h, 2h.
+- Leverage route: 1x, 2x, 3x.
+- Hyperparameters:
+  - `adx_threshold`
+  - `chop_threshold`
+  - `stop_loss`
+  - `long_term_ma_period`
+  - `donchian_period`
+- Correctness notes: the strategy uses Jesse-native lifecycle hooks and a trailing stop update path, so it is a valid futures package. The prep risk is that the breakout gate is fairly strict and may need route-specific verification to avoid an under-traded baseline.
