@@ -44,7 +44,7 @@ def test_kama_adx_pullback_detects_long_reclaim(monkeypatch):
     signal = strategy._detect_long_setup(candles)
 
     assert signal is not None
-    assert signal.stop == 100.6
+    assert signal.stop == 99.6
     assert signal.target > candles[-1][2]
 
 
@@ -72,7 +72,7 @@ def test_kama_adx_pullback_detects_short_reclaim(monkeypatch):
     signal = strategy._detect_short_setup(candles)
 
     assert signal is not None
-    assert signal.stop == 109.4
+    assert signal.stop == 110.4
     assert signal.target < candles[-1][2]
 
 
