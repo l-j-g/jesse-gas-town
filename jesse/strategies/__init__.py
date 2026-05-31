@@ -1,4 +1,6 @@
 from .Strategy import cached, Strategy
+from .FailedBreakoutValueFade import FailedBreakoutValueFade
+from .KamaAdxPullback import KamaAdxPullback
 from .RangeBarBollingerMeanReversion import RangeBarBollingerMeanReversion
 from .RangeBarBreakoutPullbackScalp import RangeBarBreakoutPullbackScalp
 from .SyntheticRangeBarStrategy import SyntheticRangeBarStrategy
