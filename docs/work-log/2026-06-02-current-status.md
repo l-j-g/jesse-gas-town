@@ -146,6 +146,23 @@ Result:
 - All positive rows remain `revise`, not HPO or paper-trade candidates.
 - Focused pytest after broader slice runner fix: `12 passed in 4.82s`.
 
+ETH Q1 slice and cross-market review:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols ETH-USDT --start 2024-01-01 --finish 2024-03-01 --leverage 3 --csv docs/backtests/2026-06-02-wave1-original-refinement-eth-q1-slice.csv --json docs/backtests/2026-06-02-wave1-original-refinement-eth-q1-slice.json
+```
+
+Result:
+
+- Added `docs/backtests/2026-06-02-wave1-original-refinement-eth-q1-slice.md`.
+- Added `docs/backtests/2026-06-02-wave1-cross-market-review.md`.
+- `8` ETH rows, `8` ok, `0` errors, `4` comparisons.
+- `TrendWaveRiderV2ShallowPullbackBand` improved both BTC and ETH Q1 slices but remains `revise`.
+- `TurtleV2FailedBreakTimeStop` improved ETH and improved BTC drawdown, but remains `revise`.
+- `KamaPullbackReclaim` and `SuperScalperTimeStopScratch` are rejected for now.
+- No candidate promoted: two markets, one regime window, low trade counts, `3x` leverage risk, no slippage sensitivity.
+- Focused pytest after ETH slice: `12 passed in 4.93s`.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?
