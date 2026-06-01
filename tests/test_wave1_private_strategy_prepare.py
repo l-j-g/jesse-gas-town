@@ -17,11 +17,18 @@ def test_wave1_manifest_tracks_originals_and_refinement_queue():
         'TurtleV2',
     ]
 
-    assert [r['variant'] for r in prep.REFINEMENT_QUEUE] == [
+    assert [r.variant for r in prep.REFINEMENT_QUEUE] == [
         'KAMA Pullback Reclaim',
         'SuperScalper Time-Stop Scratch',
         'TrendWaveRiderV2 Shallow Pullback Band',
         'Turtle V2 Failed-Break Time Stop',
+    ]
+
+    assert [r.class_name for r in prep.REFINEMENT_QUEUE] == [
+        'KamaPullbackReclaim',
+        'SuperScalperTimeStopScratch',
+        'TrendWaveRiderV2ShallowPullbackBand',
+        'TurtleV2FailedBreakTimeStop',
     ]
 
 
@@ -32,3 +39,11 @@ def test_prepare_strategy_missing_private_source_is_non_fatal(tmp_path):
     assert row['class_name'] == 'KAMA_TrendFollowing'
     assert row['prepared'] is False
     assert row['reason'] == 'missing_private_source'
+
+
+def test_prepare_refinement_missing_base_is_non_fatal(tmp_path):
+    row = prep.prepare_refinement(tmp_path / 'runtime', prep.REFINEMENT_QUEUE[0], set())
+
+    assert row['class_name'] == 'KamaPullbackReclaim'
+    assert row['prepared'] is False
+    assert row['reason'] == 'missing_prepared_base_class'

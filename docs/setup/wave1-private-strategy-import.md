@@ -29,16 +29,16 @@ The script writes a local manifest:
 .runtime/wave1-private-strategies/manifest.json
 ```
 
-## Refinement Status
+## Generated Refinements
 
-The first refinement queue is tracked in the manifest, but refinement classes are not generated yet:
+The first refinement queue is generated as local-only subclasses under `.runtime/`:
 
-- `KAMA Pullback Reclaim`
-- `SuperScalper Time-Stop Scratch`
-- `TrendWaveRiderV2 Shallow Pullback Band`
-- `Turtle V2 Failed-Break Time Stop`
+- `KamaPullbackReclaim`: requires KAMA touch-and-reclaim before taking the base continuation signal.
+- `SuperScalperTimeStopScratch`: scratches stagnant scalps after a short bar window.
+- `TrendWaveRiderV2ShallowPullbackBand`: accepts shallower CCI pullback resets while keeping base trend gates.
+- `TurtleV2FailedBreakTimeStop`: cuts breakouts that fail to show follow-through within a few bars.
 
-These remain docs-only until implemented as Jesse-native variants.
+These variants are importable for local comparison backtests, but they are not yet alpha evidence. They still need route runs and original-vs-refinement logs.
 
 ## Validation
 
@@ -48,12 +48,12 @@ Current focused gate:
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /Users/lg/src/jesse/.venv/bin/python -m pytest tests/test_wave1_private_strategy_prepare.py tests/test_baseline_ma_trend.py
 ```
 
-Expected result from 2026-06-02:
+Expected result from 2026-06-02 after refinement generation:
 
 ```text
-3 passed
+4 passed
 ```
 
 ## Next Step
 
-Use the prepared originals for baseline backtests first. Only then implement one refinement at a time so original-vs-refinement comparisons stay clean.
+Use the prepared originals and generated refinements for original-vs-refinement baseline backtests. Keep each verdict tied to fees, slippage, trade count, drawdown, and route robustness.

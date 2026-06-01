@@ -98,6 +98,13 @@ Result:
 - Focused pytest passed: `3 passed in 3.00s`.
 - Refinements remain docs-only and still need Jesse-native implementation before full original-vs-refinement backtests.
 
+Follow-up progress in the same prep workflow:
+
+- Generated local-only refinement subclasses under ignored `.runtime/wave1-private-strategies/`.
+- Import check succeeded for `KamaPullbackReclaim`, `SuperScalperTimeStopScratch`, `TrendWaveRiderV2ShallowPullbackBand`, and `TurtleV2FailedBreakTimeStop`.
+- Focused pytest passed after refinement generation: `4 passed in 4.36s`.
+- `jt-84f` is now prepared for original-vs-refinement backtest runner work, but still needs actual route metrics before closure.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?
