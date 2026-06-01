@@ -27,6 +27,21 @@ def test_profit_factor_handles_zero_loss():
     assert runner.profit_factor({'gross_profit': 10, 'gross_loss': -5}) == 2
 
 
+def test_decision_uses_percent_drawdown_units():
+    assert runner.decision({
+        'total': 20,
+        'expectancy': 1,
+        'net_profit_percentage': 5,
+        'max_drawdown': -5,
+    }) == 'revise: positive slice, needs route robustness'
+    assert runner.decision({
+        'total': 20,
+        'expectancy': 1,
+        'net_profit_percentage': 5,
+        'max_drawdown': -25,
+    }) == 'revise: positive but drawdown too high'
+
+
 def test_comparison_rows_compute_deltas():
     rows = [
         {

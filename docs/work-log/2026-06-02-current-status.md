@@ -129,6 +129,23 @@ Follow-up compatibility fix:
 - Every row still rejects for too few trades. This remains workflow evidence, not alpha evidence.
 - Focused pytest passed after guard: `11 passed in 4.90s`.
 
+Broader BTC slice for `jt-cin.5`:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT --start 2024-01-01 --finish 2024-03-01 --leverage 3 --csv docs/backtests/2026-06-02-wave1-original-refinement-btc-q1-slice.csv --json docs/backtests/2026-06-02-wave1-original-refinement-btc-q1-slice.json
+```
+
+Result:
+
+- Added `docs/backtests/2026-06-02-wave1-original-refinement-btc-q1-slice.md`.
+- `8` rows, `8` ok, `0` errors, `4` comparisons.
+- `KamaPullbackReclaim` worsened KAMA on this route slice.
+- `SuperScalperTimeStopScratch` worsened SuperScalper on this route slice.
+- `TrendWaveRiderV2ShallowPullbackBand` improved this slice but only had `13` trades.
+- `TurtleV2FailedBreakTimeStop` slightly reduced net return but improved max drawdown; only `10` trades.
+- All positive rows remain `revise`, not HPO or paper-trade candidates.
+- Focused pytest after broader slice runner fix: `12 passed in 4.82s`.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?

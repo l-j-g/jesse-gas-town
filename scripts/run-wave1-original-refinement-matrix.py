@@ -117,7 +117,7 @@ def decision(metrics: dict) -> str:
         return 'reject: too few trades'
     if expectancy <= 0 or net_pct <= 0:
         return 'reject: non-positive expectancy after fees'
-    if max_drawdown < -0.20:
+    if max_drawdown < -20:
         return 'revise: positive but drawdown too high'
     return 'revise: positive slice, needs route robustness'
 
