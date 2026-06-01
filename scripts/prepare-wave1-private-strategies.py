@@ -140,7 +140,7 @@ class SuperScalperTimeStopScratch(SuperScalper):
         opened_index = self.vars.get('opened_index')
         if opened_index is None or not self.position.is_open:
             return
-        if self.index - opened_index < self.hp['scratch_bars']:
+        if self.index - opened_index < self.hp.get('scratch_bars', 4):
             return
         entry = float(self.position.entry_price)
         if self.is_long and float(self.price) <= entry:
@@ -182,7 +182,7 @@ class TurtleV2FailedBreakTimeStop(TurtleV2):
         opened_index = self.vars.get('opened_index')
         if opened_index is None or not self.position.is_open:
             return
-        if self.index - opened_index < self.hp['failed_break_bars']:
+        if self.index - opened_index < self.hp.get('failed_break_bars', 4):
             return
         entry = float(self.position.entry_price)
         if self.is_long and float(self.price) <= entry:
@@ -230,6 +230,14 @@ def extract_strategy_code(src: Path) -> str:
     raise ValueError(f'could not find strategy code in {src}')
 
 
+def normalize_strategy_code(code: str) -> str:
+    return (
+        code
+        .replace('def on_close_position(self, order) -> None:', 'def on_close_position(self, order, closed_trade=None) -> None:')
+        .replace('def on_close_position(self, order):', 'def on_close_position(self, order, closed_trade=None):')
+    )
+
+
 def prepare_strategy(source_root: Path, runtime_root: Path, strategy: Wave1Strategy) -> dict:
     src = source_path(source_root, strategy)
     if not src.exists():
@@ -243,7 +251,7 @@ def prepare_strategy(source_root: Path, runtime_root: Path, strategy: Wave1Strat
 
     dst = target_path(runtime_root, strategy)
     dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(extract_strategy_code(src), encoding='utf-8')
+    dst.write_text(normalize_strategy_code(extract_strategy_code(src)), encoding='utf-8')
     return {
         **asdict(strategy),
         'source_path': str(src),

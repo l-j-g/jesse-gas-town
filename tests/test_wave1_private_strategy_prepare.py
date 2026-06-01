@@ -47,3 +47,11 @@ def test_prepare_refinement_missing_base_is_non_fatal(tmp_path):
     assert row['class_name'] == 'KamaPullbackReclaim'
     assert row['prepared'] is False
     assert row['reason'] == 'missing_prepared_base_class'
+
+
+def test_normalize_strategy_code_updates_old_close_hook_signature():
+    code = 'def on_close_position(self, order) -> None:\\n    pass\\n'
+
+    assert prep.normalize_strategy_code(code) == (
+        'def on_close_position(self, order, closed_trade=None) -> None:\\n    pass\\n'
+    )

@@ -105,6 +105,22 @@ Follow-up progress in the same prep workflow:
 - Focused pytest passed after refinement generation: `4 passed in 4.36s`.
 - `jt-84f` is now prepared for original-vs-refinement backtest runner work, but still needs actual route metrics before closure.
 
+Follow-up backtest smoke:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT --start 2024-01-01 --finish 2024-01-08 --leverage 3 --csv docs/backtests/2026-06-02-wave1-original-refinement-smoke.csv --json docs/backtests/2026-06-02-wave1-original-refinement-smoke.json
+```
+
+Result:
+
+- Added child-process-isolated runner so a hard-aborting private strategy records an error row instead of killing the full matrix.
+- Added `4h` and `6h` data routes for private higher-timeframe references.
+- Normalized old `on_close_position(self, order)` hooks to the current Jesse signature during local prep.
+- Smoke rows produced for `4` original/refinement pairs.
+- `KAMA`, `TrendWaveRiderV2`, and `TurtleV2` pairs ran to rows; every row rejected or blocked.
+- `SuperScalper` pair remains blocked by hard abort in the supertrend path.
+- Focused pytest passed after runner work: `10 passed in 4.42s`, then `9 passed in 3.94s`, then `10 passed in 4.42s`.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?

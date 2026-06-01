@@ -57,3 +57,15 @@ Expected result from 2026-06-02 after refinement generation:
 ## Next Step
 
 Use the prepared originals and generated refinements for original-vs-refinement baseline backtests. Keep each verdict tied to fees, slippage, trade count, drawdown, and route robustness.
+
+## Original vs Refinement Runner
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT --start 2024-01-01 --finish 2024-01-08 --leverage 3
+```
+
+Notes:
+
+- Each strategy backtest runs in a child process so a fatal private-strategy runtime abort is recorded as an error row.
+- The runner adds `4h` and `6h` data routes because several private strategies call higher-timeframe candles.
+- `3x` leverage is only a research route setting for private strategy compatibility; it is not live trading and is not approval for leverage use.
