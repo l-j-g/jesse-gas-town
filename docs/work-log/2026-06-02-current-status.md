@@ -81,6 +81,23 @@ dashboard_url: http://127.0.0.1:9000/#/backtest/739e6417-0c55-4845-99be-6048f95e
 3. Add fee/slippage and out-of-sample discipline before testing dynamic allocation or leverage.
 4. Keep Jesse MCP running in tmux session `jesse-mcp` for Codex-assisted backtest drafts and strategy inspection.
 
+## Update: Wave 1 Private Strategy Import
+
+Added safe local-only prep workflow for `jt-84f`:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/prepare-wave1-private-strategies.py --check-imports
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /Users/lg/src/jesse/.venv/bin/python -m pytest tests/test_wave1_private_strategy_prepare.py tests/test_baseline_ma_trend.py
+```
+
+Result:
+
+- Private Jesse.Trade page payloads are parsed locally from gitignored `references/jesse-trade-strategies/source/`.
+- Generated importable originals are written only to gitignored `.runtime/wave1-private-strategies/`.
+- Import check succeeded for `KAMA_TrendFollowing`, `SuperScalper`, `TrendWaveRiderV2`, and `TurtleV2`.
+- Focused pytest passed: `3 passed in 3.00s`.
+- Refinements remain docs-only and still need Jesse-native implementation before full original-vs-refinement backtests.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?
