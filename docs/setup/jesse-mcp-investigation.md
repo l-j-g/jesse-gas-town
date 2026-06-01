@@ -4,28 +4,33 @@ Date: 2026-06-02
 
 ## Summary
 
-The local Jesse 1.13.11 checkout does not expose a working MCP endpoint from
-`jesse run`. The configured Codex endpoint is `http://localhost:9002/mcp`, but
-no process listens on port `9002` after startup.
+Updated 2026-06-02: MCP is working when run from a clean Jesse 2.2.2 project
+root at `/Users/lg/gt/jesse_gas_town/crew/lg_mcp_project`.
+
+The source fork at `/Users/lg/gt/jesse_gas_town/crew/lg` is still Jesse 1.13.11
+and does not contain the MCP package. It remains useful for current repo work,
+but it is not the MCP runtime.
 
 ## Startup Command
 
-Run from the Jesse project root:
+Working MCP runtime:
 
 ```bash
-cd /Users/lg/gt/jesse_gas_town/crew/lg
-/Users/lg/src/jesse/.venv/bin/jesse run
+cd /Users/lg/gt/jesse_gas_town/crew/lg_mcp_project
+source .venv/bin/activate
+jesse run
 ```
 
-Observed runtime:
+Verified runtime:
 
-- `127.0.0.1:9000`: Jesse FastAPI/web app, `GET /` returns `200`.
-- `*:9001`: Jesse Python Language Server websocket, log says `LSP WS started at ws://localhost:9001/lsp`.
-- `127.0.0.1:9002`: no listener; `curl http://127.0.0.1:9002/mcp` fails with connection refused.
+- `127.0.0.1:9000`: Jesse dashboard/API.
+- `127.0.0.1:9001`: Jesse Python Language Server websocket.
+- `127.0.0.1:9002`: Jesse MCP Streamable HTTP server.
+- `http://127.0.0.1:9002/mcp`: MCP handshake succeeds; `list_tools` returned 45 tools.
 
 ## Source Evidence
 
-Local source inspected:
+Old local source inspected:
 
 - `jesse/cli.py`: `run()` validates cwd, runs migrations, installs/starts LSP,
   then runs one `uvicorn.run(fastapi_app, host=host, port=port, log_level="info")`.
@@ -50,6 +55,17 @@ rg -n "\bmcp\b|MCP|9002|FastMCP|streamable|model context|Model Context" \
 
 This found no runtime MCP implementation in the Jesse Python source.
 
+Upstream/current source inspected:
+
+- `upstream/master:setup.py`: version `2.2.2`.
+- `upstream/master:requirements.txt`: includes `mcp==1.26.0`.
+- `upstream/master:jesse/cli.py`: calls `sync_agent_rules()` and
+  `run_mcp_server(jesse_host=HOST, jesse_port=PORT)` during `jesse run`.
+- `upstream/master:jesse/mcp/server.py`: starts `FastMCP` with
+  `transport="streamable-http"`.
+- `upstream/master:jesse/mcp/manager.py`: reads `MCP_PORT`, defaults to `9002`,
+  requires `PASSWORD`, and starts `python -m jesse.mcp.server`.
+
 ## Codex Config
 
 Codex has an MCP server entry:
@@ -59,16 +75,21 @@ Codex has an MCP server entry:
 url = "http://localhost:9002/mcp"
 ```
 
-The client config is present, but the server side is absent in this local Jesse
-runtime.
+The client config is correct for the working 2.2.2 runtime.
 
-## Blocker
+## Environment
 
-MCP cannot be used yet for this project because Jesse 1.13.11 in this checkout
-does not start or register a Streamable HTTP MCP server. Implementing a local
-`/mcp` route here would be speculative and would not satisfy the requirement to
-use Jesse's source-of-truth MCP tools.
+The clean MCP project root contains:
 
-Next action: find the separate Jesse MCP provider or upstream branch/release that
-contains the actual MCP implementation, then wire Codex to that verified server.
-Until then, use repo inspection plus local Jesse scripts/CLI as the fallback.
+- `.venv` with `jesse==2.2.2` and `mcp==1.26.0`.
+- `.env` with `APP_PORT=9000`, `LSP_PORT=9001`, `MCP_PORT=9002`,
+  `MCP_LOG_IN_TERMINAL=true`, and `PASSWORD=local-research-only`.
+- `routes.py` copied from the baseline research project.
+- `strategies` symlinked to `/Users/lg/gt/jesse_gas_town/crew/lg/strategies`.
+- Jesse-generated `AGENTS.md` with managed rules for version `2.2.2`.
+
+## Notes
+
+Codex itself may need a restart or MCP settings refresh before the `jesse` tools
+appear in the active tool list. The server side is verified and listening at the
+configured URL.
