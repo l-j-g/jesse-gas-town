@@ -68,4 +68,5 @@ Notes:
 
 - Each strategy backtest runs in a child process so a fatal private-strategy runtime abort is recorded as an error row.
 - The runner adds `4h` and `6h` data routes because several private strategies call higher-timeframe candles.
+- The prep script guards private `ta.supertrend(...)` calls against too-short candle arrays because this Jesse checkout can hard-abort there.
 - `3x` leverage is only a research route setting for private strategy compatibility; it is not live trading and is not approval for leverage use.

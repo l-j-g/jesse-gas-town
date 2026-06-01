@@ -235,6 +235,14 @@ def normalize_strategy_code(code: str) -> str:
         code
         .replace('def on_close_position(self, order) -> None:', 'def on_close_position(self, order, closed_trade=None) -> None:')
         .replace('def on_close_position(self, order):', 'def on_close_position(self, order, closed_trade=None):')
+        .replace(
+            't = ta.supertrend(self.candles)',
+            'if len(self.candles) < 10:\n            return 0\n        t = ta.supertrend(self.candles)',
+        )
+        .replace(
+            't = ta.supertrend(self.long_term_candles)',
+            'if len(self.long_term_candles) < 10:\n            return 0\n        t = ta.supertrend(self.long_term_candles)',
+        )
     )
 
 

@@ -55,3 +55,11 @@ def test_normalize_strategy_code_updates_old_close_hook_signature():
     assert prep.normalize_strategy_code(code) == (
         'def on_close_position(self, order, closed_trade=None) -> None:\\n    pass\\n'
     )
+
+
+def test_normalize_strategy_code_guards_supertrend_short_inputs():
+    code = '        t = ta.supertrend(self.candles)\\n        t = ta.supertrend(self.long_term_candles)\\n'
+    normalized = prep.normalize_strategy_code(code)
+
+    assert 'if len(self.candles) < 10:' in normalized
+    assert 'if len(self.long_term_candles) < 10:' in normalized

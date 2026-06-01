@@ -121,6 +121,14 @@ Result:
 - `SuperScalper` pair remains blocked by hard abort in the supertrend path.
 - Focused pytest passed after runner work: `10 passed in 4.42s`, then `9 passed in 3.94s`, then `10 passed in 4.42s`.
 
+Follow-up compatibility fix:
+
+- Added a local-only normalization guard around private `ta.supertrend(...)` calls so SuperScalper does not hard-abort on too-short candle arrays.
+- Reran Wave 1 smoke with the same command.
+- Result: `8` rows, `8` ok, `0` errors, `4` original-vs-refinement comparisons.
+- Every row still rejects for too few trades. This remains workflow evidence, not alpha evidence.
+- Focused pytest passed after guard: `11 passed in 4.90s`.
+
 ## Questions Needing User Input
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?

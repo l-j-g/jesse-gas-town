@@ -33,8 +33,8 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /Users/lg/src/jesse/.venv/bin/python -m pytest 
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | `KAMA_TrendFollowing` | 15m | ok | 0.0000 | n/a | n/a | n/a | 0.0000 | 0 | reject: too few trades |
 | `KamaPullbackReclaim` | 15m | ok | 0.0000 | n/a | n/a | n/a | 0.0000 | 0 | reject: too few trades |
-| `SuperScalper` | 15m | error | n/a | n/a | n/a | n/a | n/a | n/a | blocked: runtime error |
-| `SuperScalperTimeStopScratch` | 15m | error | n/a | n/a | n/a | n/a | n/a | n/a | blocked: runtime error |
+| `SuperScalper` | 15m | ok | -4.8625 | 0.0000 | -243.1266 | -4.8625 | 0.0000 | 2 | reject: too few trades |
+| `SuperScalperTimeStopScratch` | 15m | ok | -2.9223 | 0.0000 | -97.4094 | -2.9223 | 0.0000 | 3 | reject: too few trades |
 | `TrendWaveRiderV2` | 15m | ok | 2.3910 | 1.6045 | 119.5505 | -3.9553 | 0.5000 | 2 | reject: too few trades |
 | `TrendWaveRiderV2ShallowPullbackBand` | 15m | ok | 5.2992 | 2.2389 | 176.6388 | -1.2274 | 0.6667 | 3 | reject: too few trades |
 | `TurtleV2` | 1h | ok | -2.7234 | 0.0000 | -272.3409 | -2.7234 | 0.0000 | 1 | reject: too few trades |
@@ -47,19 +47,19 @@ Raw JSON: `docs/backtests/2026-06-02-wave1-original-refinement-smoke.json`
 ## Original vs Refinement
 
 - `KAMA Pullback Reclaim`: no difference on this slice because both variants had zero trades.
+- `SuperScalper Time-Stop Scratch`: improved this tiny slice by `+1.9403` net percentage points and `+145.7172` expectancy, but both variants were losing and trade count moved only from `2` to `3`.
 - `TrendWaveRiderV2 Shallow Pullback Band`: improved this tiny slice by `+2.9082` net percentage points and `+57.0883` expectancy, but trade count moved only from `2` to `3`; this is too little evidence to trust.
 - `Turtle V2 Failed-Break Time Stop`: no difference on this slice because both variants produced the same single losing trade.
-- `SuperScalper Time-Stop Scratch`: blocked because the base strategy hard-aborted the Python child process during the `supertrend` path.
 
 ## Risks And Failure Modes
 
 - Sample is intentionally tiny; every non-error row is rejected for too few trades.
 - `3x` leverage was required for some private originals to pass margin checks; leverage/liquidation risk is not evaluated here.
 - Positive TrendWaveRiderV2 rows are especially overfit-prone because they have only `2` and `3` trades.
-- SuperScalper needs framework-compatibility debugging before route evaluation.
+- SuperScalper required a local compatibility guard because Jesse `supertrend` can hard-abort on too-short candle arrays.
 - Private source is not committed; reproducibility depends on the local account-downloaded source folder.
 - This is workflow evidence only: local import, route setup, metric capture, CSV/JSON logging, and error isolation.
 
 ## Next Step
 
-Fix or exclude `SuperScalper` after diagnosing the `supertrend` hard abort. Then run a broader Wave 1 matrix with at least one full target slice per candidate before making any alpha decision.
+Run a broader Wave 1 matrix with at least one full target slice per candidate before making any alpha decision.
