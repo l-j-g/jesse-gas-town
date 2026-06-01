@@ -46,6 +46,13 @@ source .venv/bin/activate
 jesse run
 ```
 
+For a persistent local server:
+
+```bash
+tmux new-session -d -s jesse-mcp -c /Users/lg/gt/jesse_gas_town/crew/lg_mcp_project \
+  'source .venv/bin/activate && jesse run >>/tmp/jesse-mcp-project-run.log 2>&1'
+```
+
 The source fork at `/Users/lg/gt/jesse_gas_town/crew/lg` is still Jesse 1.13.11
 and does not expose MCP. The working MCP setup is documented in
 `docs/setup/jesse-mcp-investigation.md`.

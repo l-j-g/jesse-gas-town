@@ -21,12 +21,20 @@ source .venv/bin/activate
 jesse run
 ```
 
+Persistent local session:
+
+```bash
+tmux new-session -d -s jesse-mcp -c /Users/lg/gt/jesse_gas_town/crew/lg_mcp_project \
+  'source .venv/bin/activate && jesse run >>/tmp/jesse-mcp-project-run.log 2>&1'
+```
+
 Verified runtime:
 
 - `127.0.0.1:9000`: Jesse dashboard/API.
 - `127.0.0.1:9001`: Jesse Python Language Server websocket.
 - `127.0.0.1:9002`: Jesse MCP Streamable HTTP server.
 - `http://127.0.0.1:9002/mcp`: MCP handshake succeeds; `list_tools` returned 45 tools.
+- Current persistent process runs in tmux session `jesse-mcp`.
 
 ## Source Evidence
 
