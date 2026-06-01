@@ -38,7 +38,10 @@ Codex has a `jesse` MCP server configured at:
 http://localhost:9002/mcp
 ```
 
-The endpoint only works while `jesse run` is active from a valid Jesse project root. Current issue: no confirmed non-iCloud local Jesse project root with `routes.py` and `.env` has been verified yet.
+The endpoint only works if a Jesse MCP server is actually exposed while
+`jesse run` is active. The local project root is now verified, but this Jesse
+1.13.11 checkout does not start a listener on port `9002`; see
+`docs/setup/jesse-mcp-investigation.md`.
 
 Fallback when MCP is unavailable:
 
