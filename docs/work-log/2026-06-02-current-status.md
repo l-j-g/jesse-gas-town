@@ -212,3 +212,22 @@ Result:
 - `TurtleV2FailedBreakTimeStop` remains revise only as drawdown-control idea: BTC positive, ETH negative after costs.
 - `KamaPullbackReclaim` and `SuperScalperTimeStopScratch` remain rejected.
 - Next evidence: out-of-sample `2024-03-01` to `2024-06-01`, BTC/ETH, fee `0.001`, same `3x` route before HPO.
+
+## Update: Wave 1 Out-of-Sample Cost Slice
+
+Ran the next contiguous OOS slice:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT,ETH-USDT --start 2024-03-01 --finish 2024-06-01 --leverage 3 --fee 0.001 --csv docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.csv --json docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.json
+```
+
+Result:
+
+- Added `docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.md/csv/json`.
+- Updated `docs/backtests/2026-06-02-wave1-cross-market-review.md`.
+- `16` rows, `16` ok, `0` runtime errors.
+- `TrendWaveRiderV2ShallowPullbackBand`: BTC net `40.5998%`, ETH net `-23.1916%`; not cross-market robust.
+- `TrendWaveRiderV2` original: BTC net `33.3390%`, ETH net `-26.6045%`; useful comparison baseline only.
+- `SuperScalper` original: BTC net `-14.2839%`, ETH net `3.4759%`; inconsistent.
+- `TurtleV2FailedBreakTimeStop`: negative on both BTC and ETH after costs; keep only as drawdown-control idea.
+- Decision: no HPO candidate yet. Next task should test regime filtering or lower leverage for TrendWave only.

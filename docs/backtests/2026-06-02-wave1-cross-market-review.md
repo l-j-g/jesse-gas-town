@@ -60,3 +60,24 @@ Result:
 - `KamaPullbackReclaim` and `SuperScalperTimeStopScratch` remain rejected.
 
 Updated next step: run out-of-sample `2024-03-01` to `2024-06-01` for `TrendWaveRiderV2ShallowPullbackBand`, `TurtleV2FailedBreakTimeStop`, and `SuperScalper` original at fee `0.001` before any HPO.
+
+## Out-of-Sample Follow-Up
+
+Evidence: `docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.md`
+
+Command:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT,ETH-USDT --start 2024-03-01 --finish 2024-06-01 --leverage 3 --fee 0.001 --csv docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.csv --json docs/backtests/2026-06-02-wave1-original-refinement-oos-mar-jun-cost-001.json
+```
+
+Result:
+
+- `16` rows, `16` ok, `0` runtime errors.
+- `TrendWaveRiderV2ShallowPullbackBand` is not cross-market robust yet: BTC net `40.5998%`, ETH net `-23.1916%`.
+- `TrendWaveRiderV2` original also splits: BTC net `33.3390%`, ETH net `-26.6045%`.
+- `SuperScalper` flips from Q1: BTC net `-14.2839%`, ETH net `3.4759%`.
+- `TurtleV2FailedBreakTimeStop` improves drawdown versus original but remains negative on both BTC and ETH.
+- No HPO candidate yet.
+
+Updated next step: create a smaller follow-up for `TrendWaveRiderV2` and `TrendWaveRiderV2ShallowPullbackBand` to test regime filtering or lower leverage. Do not optimize parameters yet.
