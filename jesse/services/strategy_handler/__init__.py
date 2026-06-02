@@ -25,6 +25,10 @@ def generate(name: str) -> JSONResponse:
         data = data.replace('ExampleStrategy', name)
     with open(f"{path}/__init__.py", "wt") as fin:
         fin.write(data)
+        
+    # create the reports folder inside the startegy folder
+    os.makedirs(f"{path}/reports", exist_ok=True)
+        
     # return the location of generated strategy directory
     return JSONResponse({
         'status': 'success',
@@ -88,6 +92,30 @@ def save_strategy(name: str, content: str) -> JSONResponse:
     })
 
 
+def fork_strategy(new_name: str, content: str) -> JSONResponse:
+    import re
+    path = f'strategies/{new_name}'
+
+    if os.path.isdir(path):
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Strategy "{new_name}" already exists.'
+        }, status_code=409)
+
+    # Replace the class name in the code with the new strategy name
+    updated_content = re.sub(r'(?m)^class\s+(\w+)\b', f'class {new_name}', content)
+
+    os.makedirs(path, exist_ok=True)
+
+    with open(f"{path}/__init__.py", "wt") as fin:
+        fin.write(updated_content)
+
+    return JSONResponse({
+        'status': 'success',
+        'message': f'Strategy "{new_name}" has been created.'
+    })
+
+
 def import_strategy(name: str, code: str) -> JSONResponse:
     import re
     
@@ -133,6 +161,7 @@ def import_strategy(name: str, code: str) -> JSONResponse:
 
 def delete_strategy(name: str) -> JSONResponse:
     path = f'strategies/{name}'
+    reports_path = f'{path}/reports'
     exists = os.path.isdir(path)
 
     if not exists:
@@ -140,6 +169,11 @@ def delete_strategy(name: str) -> JSONResponse:
             'status': 'error',
             'message': f'Strategy "{name}" does not exist.'
         }, status_code=404)
+
+    # Explicitly remove report artifacts first, then the strategy directory.
+    # This keeps behavior clear even if deletion logic changes later.
+    if os.path.isdir(reports_path):
+        shutil.rmtree(reports_path)
 
     shutil.rmtree(path)
 

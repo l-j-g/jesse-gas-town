@@ -87,6 +87,50 @@ cd /Users/lg/src/jesse
 ./scripts/run-local-pytest.sh
 ```
 
+## Publishing the Docker Image
+
+When the user asks to **"push a docker build for Jesse"** (or to "release"/"publish"
+Jesse), publish by pushing a version git tag. The build runs on GitHub Actions
+(`.github/workflows/docker-publish.yml`) and, on a `v*` tag push, publishes to **PyPI** and
+**Docker Hub in parallel**: it uploads the package to PyPI and (independently) builds the
+multi-arch `linux/amd64` + `linux/arm64` Docker image, publishing `salehmir/jesse:<version>`
+and `salehmir/jesse:latest`. The two are independent — if one fails the other still
+publishes; just cut a new version to retry the failed half.
+
+Steps (run from inside `jesse/`):
+
+1. Read the current version from `setup.py` (the `VERSION = "x.y.z"` line). Do **not**
+   hardcode it — always read it fresh.
+2. Tell the user which version you're about to tag and push (e.g. "Pushing docker build
+   for v2.2.0").
+3. Confirm the tag doesn't already exist (`git tag -l v<version>` and
+   `git ls-remote --tags origin v<version>`). If it already exists, stop and ask the user
+   whether to bump the version in `setup.py` (and `version.py`) first.
+4. Create and push the tag:
+   ```bash
+   cd /Users/salehmir/Codes/jesse/dev-jesse/jesse
+   git tag v<version>
+   git push origin v<version>
+   ```
+5. The `push: tags: ['v*']` trigger starts the workflow automatically. Optionally watch it:
+   ```bash
+   gh run watch --repo jesse-ai/jesse
+   ```
+6. When done, verify both architectures are present:
+   ```bash
+   docker buildx imagetools inspect salehmir/jesse:latest
+   ```
+
+Notes:
+- Pushing a `v*` tag publishes **both PyPI and Docker** via this one workflow — PyPI first,
+  Docker second. Do **not** also publish to PyPI manually (e.g. `twine upload`), or the tag
+  push will fail on a duplicate-version upload.
+- Required `jesse-ai/jesse` GitHub repo secrets: `PYPI_API_TOKEN` (PyPI),
+  `DOCKERHUB_USERNAME` + `DOCKERHUB_TOKEN` (Docker Hub), and optionally
+  `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` (build notification). Nothing to configure locally.
+- A manual run (`gh workflow run docker-publish.yml --repo jesse-ai/jesse`) **skips PyPI**
+  and only rebuilds/pushes `salehmir/jesse:latest` — useful as a credentials smoke test.
+
 ## Important Notes
 
 ### Debugging
@@ -114,6 +158,13 @@ cd /Users/lg/src/jesse
   ```bash
   codex -C /Users/lg/src/jesse --profile jesse
   ```
+- Before meaningful strategy or framework work, check upstream Jesse state:
+  ```bash
+  git fetch upstream --tags
+  git tag --list 'v*' | sort -V | tail
+  git status --short --branch
+  ```
+- If a newer Jesse release tag is available, merge it on a review branch before changing strategy code, then rerun focused strategy tests.
 - For Gas Town strategy orchestration, read `docs/gas-town-strategy-lab.md` and `docs/gas-town-prompts.md`.
 - Use the `jesse-gas-town-strategy-lab` skill when generating strategy ideas, dispatching Gas Town workers, evaluating candidates, or paper-gating strategy candidates.
 - Read `docs/jesse-strategy-playbook.md` for the intended `Strategy` lifecycle and trade-placement contract.

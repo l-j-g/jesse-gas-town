@@ -1,15 +1,17 @@
 from jesse.models.ExchangeApiKeys import ExchangeApiKeys
 from jesse.models.NotificationApiKeys import NotificationApiKeys
+from jesse.models.AiModel import AiModel
 from jesse.models.OptimizationSession import OptimizationSession
 from jesse.models.BacktestSession import BacktestSession
 from jesse.models.MonteCarloSession import MonteCarloSession
+from jesse.models.SignificanceTestSession import SignificanceTestSession
 from jesse.models.LiveSession import LiveSession
 from jesse.models.Order import Order
 from jesse.enums import live_session_statuses
 from jesse.repositories import order_repository, live_session_repository
 from jesse.services.multiprocessing import process_manager
 import json
-import math
+import os
 import jesse.helpers as jh
 
 
@@ -32,6 +34,24 @@ def get_exchange_api_key(exchange_api_key: ExchangeApiKeys) -> dict:
             result[key] = value[0:4] + '***...***' + value[-4:]
 
     return result
+
+
+def get_ai_model(ai_model: AiModel) -> dict:
+    api_key = ai_model.api_key
+    if len(api_key) > 8:
+        masked_key = api_key[0:4] + '***...***' + api_key[-4:]
+    else:
+        masked_key = '***...***'
+
+    return {
+        'id': str(ai_model.id),
+        'name': ai_model.name,
+        'provider': ai_model.provider,
+        'base_url': ai_model.base_url,
+        'api_key': masked_key,
+        'model_id': ai_model.model_id,
+        'created_at': ai_model.created_at.isoformat(),
+    }
 
 
 def get_notification_api_key(api_key: NotificationApiKeys, protect_sensitive_data=True) -> dict:
@@ -185,7 +205,12 @@ def get_backtest_session_for_load_more(session: BacktestSession) -> dict:
     equity_curve = jh.clean_infinite_values(json.loads(session.equity_curve)) if session.equity_curve else []
     trades = jh.clean_infinite_values(json.loads(session.trades)) if session.trades else []
     hyperparameters = jh.clean_infinite_values(json.loads(session.hyperparameters)) if session.hyperparameters else None
-    
+
+    # Check if chart images exist for this session (probe the equity_curve image as sentinel)
+    charts_folder = os.path.abspath('storage/backtest-charts')
+    probe_path = os.path.join(charts_folder, f'{session.id}_equity_curve.png')
+    has_charts_image = os.path.exists(probe_path)
+
     result = {
         'id': str(session.id),
         'status': session.status,
@@ -194,6 +219,7 @@ def get_backtest_session_for_load_more(session: BacktestSession) -> dict:
         'trades': trades,
         'hyperparameters': hyperparameters,
         'has_chart_data': bool(session.chart_data),
+        'has_charts_image': has_charts_image,
         'created_at': session.created_at,
         'updated_at': session.updated_at,
         'execution_duration': session.execution_duration,
@@ -495,3 +521,56 @@ def get_order_details(order) -> dict:
     }
     
     return jh.clean_nan_values(jh.clean_infinite_values(result))
+
+
+def get_significance_test_session(session) -> dict:
+    """Transform a SignificanceTestSession for API list response (minimal data)."""
+    results_summary = None
+    if session.results:
+        try:
+            raw = json.loads(session.results)
+            results_summary = {
+                'p_value': raw.get('p_value'),
+                'annualized_return': raw.get('annualized_return'),
+                'observed_mean': raw.get('observed_mean'),
+                'n_simulations': raw.get('n_simulations'),
+                'n_observations': raw.get('n_observations'),
+            }
+        except Exception:
+            pass
+    return {
+        'id': str(session.id),
+        'status': session.status,
+        'has_results': bool(session.results),
+        'results': results_summary,
+        'created_at': session.created_at,
+        'updated_at': session.updated_at,
+        'title': session.title,
+        'description': session.description,
+        'strategy_codes': json.loads(session.strategy_codes) if session.strategy_codes else {},
+        'state': session.state_json,
+    }
+
+
+def get_significance_test_session_for_load_more(session) -> dict:
+    """Transform a SignificanceTestSession for the detailed session view."""
+    results_data = None
+    if session.results:
+        results_data = json.loads(session.results)
+
+    return {
+        'id': str(session.id),
+        'status': session.status,
+        'has_results': bool(session.results),
+        'results': results_data,
+        'chart_path': session.chart_path,
+        'exception': session.exception,
+        'traceback': session.traceback,
+        'theme': session.theme,
+        'created_at': session.created_at,
+        'updated_at': session.updated_at,
+        'title': session.title,
+        'description': session.description,
+        'strategy_codes': json.loads(session.strategy_codes) if session.strategy_codes else {},
+        'state': session.state_json,
+    }

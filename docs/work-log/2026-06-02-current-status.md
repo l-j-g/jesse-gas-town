@@ -167,3 +167,30 @@ Result:
 
 - Should next strategy work prioritize `jt-84f` importability blocker or a fresh MA refinement experiment?
 - Should upstream Jesse 2.2.2 be merged/rebased into the crew research fork, or should MCP stay isolated in `lg_mcp_project` for now?
+
+## Update: Jesse 2.2.2 Upstream Merge
+
+User decision: merge upstream Jesse `v2.2.2` into the crew research fork and make upstream update checks a regular step.
+
+Commands:
+
+```bash
+git fetch upstream --tags
+git fetch origin master --unshallow --tags
+git merge-base HEAD v2.2.2
+git switch -c codex/merge-jesse-2.2.2
+git merge --no-commit v2.2.2
+/Users/lg/src/jesse/.venv/bin/python -m pip install -r requirements.txt
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /Users/lg/src/jesse/.venv/bin/python -m pytest tests/test_wave1_private_strategy_prepare.py tests/test_wave1_original_refinement_matrix.py tests/test_baseline_ma_trend.py
+```
+
+Result:
+
+- Repo was shallow; unshallowed before merge to avoid an unsafe unrelated-history merge.
+- Merge from upstream tag `v2.2.2` applied cleanly; only overlapping local/upstream changed file was `AGENTS.md`.
+- `jesse/version.py` now reports `__version__ = "2.2.2"`.
+- Updated local venv to upstream `requirements.txt`; new 2.2.2 deps included `matplotlib`, `mcp`, FastAPI/Starlette updates, and `jesse-rust==1.1.0`.
+- Refreshed editable install metadata with `/Users/lg/src/jesse/.venv/bin/python -m pip install -e .`; package now installs as `jesse-2.2.2`.
+- Focused strategy workflow tests passed after merge: `12 passed in 6.26s`.
+- Focused strategy workflow tests passed after editable refresh: `12 passed in 4.67s`.
+- Added regular upstream update-check guidance to `AGENTS.md`: fetch upstream tags, inspect latest tags, confirm clean status, merge newer release tags on a review branch before strategy code changes, then rerun focused tests.
