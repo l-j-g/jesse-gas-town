@@ -194,3 +194,21 @@ Result:
 - Focused strategy workflow tests passed after merge: `12 passed in 6.26s`.
 - Focused strategy workflow tests passed after editable refresh: `12 passed in 4.67s`.
 - Added regular upstream update-check guidance to `AGENTS.md`: fetch upstream tags, inspect latest tags, confirm clean status, merge newer release tags on a review branch before strategy code changes, then rerun focused tests.
+
+## Update: Wave 1 Cost Sensitivity
+
+Ran Q1 fee/slippage proxy at effective fee `0.001` after the Jesse `2.2.2` merge:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT,ETH-USDT --start 2024-01-01 --finish 2024-03-01 --leverage 3 --fee 0.001 --csv docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.csv --json docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.json
+```
+
+Result:
+
+- Added `docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.md/csv/json`.
+- Updated `docs/backtests/2026-06-02-wave1-cross-market-review.md`.
+- `16` rows, `16` ok, `0` runtime errors.
+- `TrendWaveRiderV2ShallowPullbackBand` remains the best refinement but still only revise: BTC net `17.0312%`, ETH net `0.4859%`, low trade counts.
+- `TurtleV2FailedBreakTimeStop` remains revise only as drawdown-control idea: BTC positive, ETH negative after costs.
+- `KamaPullbackReclaim` and `SuperScalperTimeStopScratch` remain rejected.
+- Next evidence: out-of-sample `2024-03-01` to `2024-06-01`, BTC/ETH, fee `0.001`, same `3x` route before HPO.

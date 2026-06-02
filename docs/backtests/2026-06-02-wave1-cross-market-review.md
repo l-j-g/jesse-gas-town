@@ -40,3 +40,23 @@ Run a focused cost-sensitivity matrix for:
 - `TurtleV2` vs `TurtleV2FailedBreakTimeStop`
 
 Use BTC-USDT and ETH-USDT over the same Q1 slice with fee/slippage proxy settings before expanding to out-of-sample dates.
+
+## Cost Sensitivity Follow-Up
+
+Evidence: `docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.md`
+
+Command:
+
+```bash
+/Users/lg/src/jesse/.venv/bin/python scripts/run-wave1-original-refinement-matrix.py --symbols BTC-USDT,ETH-USDT --start 2024-01-01 --finish 2024-03-01 --leverage 3 --fee 0.001 --csv docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.csv --json docs/backtests/2026-06-02-wave1-original-refinement-q1-cost-001.json
+```
+
+Result:
+
+- `16` rows, `16` ok, `0` runtime errors.
+- `TrendWaveRiderV2ShallowPullbackBand` remains the best refinement; BTC net `17.0312%`, ETH net `0.4859%` at fee `0.001`, still only `13` and `11` trades.
+- `TurtleV2FailedBreakTimeStop` remains useful only as a drawdown-control idea; BTC net `21.8504%`, ETH net `-2.7682%`.
+- `SuperScalper` original survives BTC cost pressure but rejects ETH; use as baseline-only candidate, not promotion.
+- `KamaPullbackReclaim` and `SuperScalperTimeStopScratch` remain rejected.
+
+Updated next step: run out-of-sample `2024-03-01` to `2024-06-01` for `TrendWaveRiderV2ShallowPullbackBand`, `TurtleV2FailedBreakTimeStop`, and `SuperScalper` original at fee `0.001` before any HPO.
