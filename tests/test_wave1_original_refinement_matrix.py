@@ -22,6 +22,40 @@ def test_default_data_timeframes_cover_private_htf_refs():
     assert runner.DEFAULT_DATA_TIMEFRAMES == ('4h', '6h')
 
 
+def test_filter_pairs_matches_original_or_refinement_name():
+    assert runner.filter_pairs(runner.DEFAULT_PAIRS, 'TrendWaveRiderV2') == [
+        ('TrendWaveRiderV2', 'TrendWaveRiderV2ShallowPullbackBand', '15m')
+    ]
+    assert runner.filter_pairs(runner.DEFAULT_PAIRS, 'TrendWaveRiderV2ShallowPullbackBand') == [
+        ('TrendWaveRiderV2', 'TrendWaveRiderV2ShallowPullbackBand', '15m')
+    ]
+
+
+def test_filter_pairs_rejects_unknown_name():
+    try:
+        runner.filter_pairs(runner.DEFAULT_PAIRS, 'NoSuchStrategy')
+    except ValueError as exc:
+        assert 'matched no pairs' in str(exc)
+    else:
+        raise AssertionError('expected ValueError')
+
+
+def test_parse_extra_pairs_accepts_original_refinement_timeframe():
+    assert runner.parse_extra_pairs('A:B:1h,C:D:15m') == [
+        ('A', 'B', '1h'),
+        ('C', 'D', '15m'),
+    ]
+
+
+def test_parse_extra_pairs_rejects_bad_shape():
+    try:
+        runner.parse_extra_pairs('A:B')
+    except ValueError as exc:
+        assert 'original:refinement:timeframe' in str(exc)
+    else:
+        raise AssertionError('expected ValueError')
+
+
 def test_profit_factor_handles_zero_loss():
     assert runner.profit_factor({'gross_profit': 10, 'gross_loss': 0}) is None
     assert runner.profit_factor({'gross_profit': 10, 'gross_loss': -5}) == 2

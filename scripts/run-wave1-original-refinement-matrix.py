@@ -56,6 +56,29 @@ def parse_csv_values(value: str, cast):
     return [cast(v.strip()) for v in value.split(',') if v.strip()]
 
 
+def filter_pairs(pairs: list[tuple[str, str, str]], pair_filter: str) -> list[tuple[str, str, str]]:
+    names = set(parse_csv_values(pair_filter, str))
+    if not names:
+        return pairs
+    filtered = [
+        pair for pair in pairs
+        if pair[0] in names or pair[1] in names
+    ]
+    if not filtered:
+        raise ValueError(f'pair filter matched no pairs: {pair_filter}')
+    return filtered
+
+
+def parse_extra_pairs(value: str) -> list[tuple[str, str, str]]:
+    pairs = []
+    for item in parse_csv_values(value, str):
+        parts = item.split(':')
+        if len(parts) != 3 or not all(parts):
+            raise ValueError(f'extra pair must be original:refinement:timeframe, got: {item}')
+        pairs.append((parts[0], parts[1], parts[2]))
+    return pairs
+
+
 def timestamp(date_value: str) -> int:
     return jh.arrow_to_timestamp(arrow.get(date_value, 'YYYY-MM-DD'))
 
@@ -357,6 +380,8 @@ def main() -> None:
     parser.add_argument('--fee', type=float, default=0.0004)
     parser.add_argument('--leverage', type=int, default=3)
     parser.add_argument('--runtime-root', type=Path, default=RUNTIME_ROOT)
+    parser.add_argument('--pair-filter', default='', help='Comma-separated original/refinement strategy names to run.')
+    parser.add_argument('--extra-pair', default='', help='Comma-separated original:refinement:timeframe pairs to append.')
     parser.add_argument('--csv', default='docs/backtests/2026-06-02-wave1-original-refinement-smoke.csv')
     parser.add_argument('--json', default='docs/backtests/2026-06-02-wave1-original-refinement-smoke.json')
     parser.add_argument('--child-case', action='store_true', help=argparse.SUPPRESS)
@@ -386,15 +411,17 @@ def main() -> None:
         return
 
     symbols = parse_csv_values(args.symbols, str)
+    pairs = DEFAULT_PAIRS + parse_extra_pairs(args.extra_pair)
+    pairs = filter_pairs(pairs, args.pair_filter)
     rows = []
-    for original, refinement, timeframe in DEFAULT_PAIRS:
+    for original, refinement, timeframe in pairs:
         for strategy_name in (original, refinement):
             for symbol in symbols:
                 row = run_case_subprocess(args, strategy_name, symbol, timeframe)
                 rows.append(row)
                 print(json.dumps(row, sort_keys=True, default=str))
 
-    comparisons = comparison_rows(rows, DEFAULT_PAIRS)
+    comparisons = comparison_rows(rows, pairs)
     csv_path = ROOT / args.csv
     json_path = ROOT / args.json
     write_csv(csv_path, rows)

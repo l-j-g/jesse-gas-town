@@ -81,3 +81,17 @@ Result:
 - No HPO candidate yet.
 
 Updated next step: create a smaller follow-up for `TrendWaveRiderV2` and `TrendWaveRiderV2ShallowPullbackBand` to test regime filtering or lower leverage. Do not optimize parameters yet.
+
+## TrendWave Lower-Leverage Follow-Up
+
+Evidence: `docs/backtests/2026-06-02-trendwave-shallow-reduced-risk-lev1.md`
+
+Result:
+
+- Base `TrendWaveRiderV2ShallowPullbackBand` cannot run at `1x`; private source sizing submits about `3x` notional and hits insufficient margin.
+- Generated `TrendWaveRiderV2ShallowReducedRisk` removes the notional multiplier and runs at `1x`.
+- Q1 fee `0.001`: BTC net `5.6149%`, ETH net `0.4040%`.
+- OOS Mar-Jun fee `0.001`: BTC net `13.1111%`, ETH net `-7.0497%`.
+- Lower risk improves drawdown and route validity but does not fix ETH OOS fragility.
+
+Updated next step: test one simple TrendWave regime filter. Do not run HPO yet.

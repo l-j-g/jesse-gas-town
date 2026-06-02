@@ -231,3 +231,26 @@ Result:
 - `SuperScalper` original: BTC net `-14.2839%`, ETH net `3.4759%`; inconsistent.
 - `TurtleV2FailedBreakTimeStop`: negative on both BTC and ETH after costs; keep only as drawdown-control idea.
 - Decision: no HPO candidate yet. Next task should test regime filtering or lower leverage for TrendWave only.
+
+## Update: TrendWave Reduced-Risk Leverage Gate
+
+Implemented and tested the smallest lower-leverage follow-up for `jt-cin.15`:
+
+- Added generated local-only refinement `TrendWaveRiderV2ShallowReducedRisk`.
+- Keeps shallow CCI trigger from `TrendWaveRiderV2ShallowPullbackBand`.
+- Removes the private source `qty * 3` notional multiplier so `1x` route is valid.
+- Added `--pair-filter` and `--extra-pair` to `scripts/run-wave1-original-refinement-matrix.py` for focused pair runs.
+
+Evidence:
+
+- `docs/backtests/2026-06-02-trendwave-shallow-reduced-risk-lev1.md`
+- `docs/backtests/2026-06-02-trendwave-shallow-reduced-risk-q1-cost-001-lev1.csv/json`
+- `docs/backtests/2026-06-02-trendwave-shallow-reduced-risk-oos-mar-jun-cost-001-lev1.csv/json`
+
+Result:
+
+- Base `TrendWaveRiderV2ShallowPullbackBand` fails at `1x` due insufficient margin from `qty * 3` sizing.
+- Reduced-risk variant works at `1x`.
+- Q1 BTC/ETH: BTC net `5.6149%`, ETH net `0.4040%`, both positive after fee `0.001`.
+- OOS BTC/ETH: BTC net `13.1111%`, ETH net `-7.0497%`; ETH still fails after costs.
+- Decision: revise, not HPO. Lower sizing fixes leverage validity and drawdown but not cross-market regime fragility.

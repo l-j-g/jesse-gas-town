@@ -91,6 +91,13 @@ REFINEMENT_QUEUE = (
         thesis='Allow shallower CCI pullback resets while keeping the base trend gates.',
     ),
     Wave1Refinement(
+        base_class='TrendWaveRiderV2',
+        class_name='TrendWaveRiderV2ShallowReducedRisk',
+        variant='TrendWaveRiderV2 Shallow Reduced Risk',
+        changed_component='position sizing',
+        thesis='Keep the shallow pullback trigger but remove the private source qty multiplier so lower leverage routes are valid.',
+    ),
+    Wave1Refinement(
         base_class='TurtleV2',
         class_name='TurtleV2FailedBreakTimeStop',
         variant='Turtle V2 Failed-Break Time Stop',
@@ -161,6 +168,31 @@ class TrendWaveRiderV2ShallowPullbackBand(TrendWaveRiderV2):
         if self.cci > 75:
             return -1
         return 0
+''',
+    'TrendWaveRiderV2ShallowReducedRisk': '''from jesse import utils
+from strategies.TrendWaveRiderV2 import TrendWaveRiderV2
+
+
+class TrendWaveRiderV2ShallowReducedRisk(TrendWaveRiderV2):
+    """TrendWaveRiderV2 variant: shallow pullback trigger with lower notional sizing."""
+
+    @property
+    def oscillator_signal(self):
+        if self.cci < -75:
+            return 1
+        if self.cci > 75:
+            return -1
+        return 0
+
+    def go_long(self):
+        stop_loss = self.price - self.atr * 3
+        qty = utils.risk_to_qty(self.available_margin, 5, self.price, stop_loss, fee_rate=self.fee_rate)
+        self.buy = qty, self.price
+
+    def go_short(self):
+        stop_loss = self.price + self.atr * 3
+        qty = utils.risk_to_qty(self.available_margin, 5, self.price, stop_loss, fee_rate=self.fee_rate)
+        self.sell = qty, self.price
 ''',
     'TurtleV2FailedBreakTimeStop': '''from strategies.TurtleV2 import TurtleV2
 

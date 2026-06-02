@@ -21,6 +21,7 @@ def test_wave1_manifest_tracks_originals_and_refinement_queue():
         'KAMA Pullback Reclaim',
         'SuperScalper Time-Stop Scratch',
         'TrendWaveRiderV2 Shallow Pullback Band',
+        'TrendWaveRiderV2 Shallow Reduced Risk',
         'Turtle V2 Failed-Break Time Stop',
     ]
 
@@ -28,6 +29,7 @@ def test_wave1_manifest_tracks_originals_and_refinement_queue():
         'KamaPullbackReclaim',
         'SuperScalperTimeStopScratch',
         'TrendWaveRiderV2ShallowPullbackBand',
+        'TrendWaveRiderV2ShallowReducedRisk',
         'TurtleV2FailedBreakTimeStop',
     ]
 
